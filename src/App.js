@@ -1,12 +1,16 @@
 import React from "react";
+import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import CrearCuenta from "./componentes/CrearCuenta";
+import Login from "./componentes/Login";
 
 function App() {
   return (
-    <div>
-      <h1>
-        Bienvenidos al POS
-      </h1>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" exact element= {<Login/>}/>
+        <Route path="/crear-cuenta" exact element= {<CrearCuenta/>}/>
+      </Routes>
+    </Router>
   );
 }
 

@@ -7,7 +7,7 @@ const Login = () => {
             <div className="md:w-2/3 lg:w-2/5">
                 <h1 className="incline bg-gradient-to-r from-indigo-200 via-blue-600 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">Bienvenidos al POS</h1>
                 <h1 className="incline bg-gradient-to-r from-indigo-200 via-blue-600 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">Iniciar Sesion</h1>
-                <form className="my-10 bg-white shadow rounded-lg p-10">
+                <form className="my-10 bg-blue-300 shadow rounded-lg p-10">
                     <div className="my-5">
                         <label className="uppercase text-gray-600 block text-lx font-bold">Email</label>
                         <input

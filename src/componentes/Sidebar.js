@@ -16,15 +16,6 @@ const Sidebar = () => {
                     Crear Categoria
                 </Link>
             </div>
-            <div className="flex">
-                <Link
-                    className="bg-blue-900 mb-5 w-full py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-zinc-800 hover:text-black transition-colors"
-                    to={"/crear-productos"}>
-                    Crear Productos
-                </Link>
-            </div>
-
-
         </aside>
 
     );

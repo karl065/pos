@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import swal from "sweetalert";
@@ -7,17 +7,26 @@ import crud from "../conexiones/crud";
 
 
 
-const CrearCategoria = () => {
+const ActualizarCategoria = () => {
 
     const navigate = useNavigate();
 
+    let { search } = useLocation();
+    let query = new URLSearchParams(search);
+    console.log(query);
+
+    let id = query.get("id");
+    let nombreAdmin = query.get("nombre");
+    let imagenAdmin = query.get("imagen");
+
     const [categoria, setCategoria] = useState({
-        nombre: '',
-        imagen: ''
+        idCategoria: id,
+        nombre: nombreAdmin,
+        imagen: imagenAdmin
     });
 
-
     const { nombre, imagen } = categoria;
+
 
     const onChange = (e) => {
         setCategoria({
@@ -26,7 +35,10 @@ const CrearCategoria = () => {
         })
     };
 
-    const crearCategoria = async () => {
+
+
+    const actualizar = async () => {
+
 
         if (nombre === "") {
             const mensaje = "Introduzca una categoria valida";
@@ -39,53 +51,37 @@ const CrearCategoria = () => {
             })
         } else {
 
+            id = categoria.idCategoria;
             const data = {
                 nombre: categoria.nombre,
                 imagen: categoria.imagen
             };
-            console.log(data);
-            const response = await crud.POST("/api/categorias", data);
+
+            const response = await crud.PUT(`/api/categorias/${id}`, data);
             const mensaje = response.msg;
-
             console.log(mensaje);
-            if (mensaje === "La categoria ya existe ") {
-                swal({
-                    position: 'top-end',
-                    icon: 'error',
-                    title: mensaje,
-                    buttons: false,
-                    timer: 1500
-                })
 
-                setCategoria({
-                    nombre: "",
-                    imagen: ""
-                })
+            swal({
+                position: 'top-end',
+                icon: 'success',
+                text: mensaje,
+                buttons: false,
+                timer: 1000
+            })
 
-            } else {
-                swal({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Categoria creada con Exito!',
-                    buttons: false,
-                    timer: 1000
-                })
+            setCategoria({
+                nombre: "",
+                imagen: ""
+            })
 
-                setCategoria({
-                    nombre: "",
-                    imagen: ""
-                })
-                /*
-                const token = response.token;
-                localStorage.setItem("token", token);
-                */
-                navigate("/admin");
-            };
+            navigate("/admin")
+
         }
-    };
+
+    }
     const onSubmit = (e) => {
         e.preventDefault();
-        crearCategoria();
+        actualizar();
     }
 
 
@@ -95,10 +91,9 @@ const CrearCategoria = () => {
             <div className="md:flex md:min-h-screen">
                 <Sidebar />
                 <main className="flex-1">
-
                     <div className="mt-10 flex justify-center">
                         <h1 className="tracking-tight text-transparent text-4xl incline bg-gradient-to-r from-white via-blue-600 to-white bg-clip-text font-black text-left mb-5 md:mb-0">
-                            Crear Categoria
+                            Actualizar Categoria
                         </h1>
                     </div>
                     <div className="mt-10 flex justify-center">
@@ -129,8 +124,9 @@ const CrearCategoria = () => {
                             </div>
                             <input
                                 type="submit"
-                                value="Crear Categoria"
+                                value="Actualizar Categoria"
                                 className="bg-blue-900 mb-5 w-full py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-zinc-800 hover:text-black transition-colors"
+                                onClick={actualizar}
                             />
                             <Link
                                 className="block text-center my-5 font-black text-white hover:cursor-pointer hover:text-black transition-colors"
@@ -146,7 +142,8 @@ const CrearCategoria = () => {
 
 
         </>
+
     );
 }
 
-export default CrearCategoria;
+export default ActualizarCategoria;

@@ -5,28 +5,42 @@ import Sidebar from './Sidebar';
 import swal from 'sweetalert';
 import crud from '../conexiones/crud';
 
-const CrearCategoria = () => {
+const ActualizarProducto = () => {
   const navigate = useNavigate();
 
   let {search} = useLocation();
   let query = new URLSearchParams(search);
-  let nombreUsuario = query.get('nombreUsuario');
+  console.log(query);
 
-  const [categoria, setCategoria] = useState({
-    nombre: '',
-    imagen: '',
+  let idCategoria = query.get('idCategoria');
+  let id = query.get('id');
+  let nombreAdmin = query.get('nombre');
+  let nombreCategoria = query.get('nombreCategoria');
+  let descripcionProducto = query.get('descripcion');
+  let stockProducto = query.get('stock');
+  let precioProducto = query.get('precio');
+  let imagenAdmin = query.get('imagen');
+
+  const [producto, setProducto] = useState({
+    idCatego: idCategoria,
+    idProducto: id,
+    nombre: nombreAdmin,
+    descripcion: descripcionProducto,
+    stock: stockProducto,
+    precio: precioProducto,
+    imagen: imagenAdmin,
   });
 
-  const {nombre, imagen} = categoria;
+  const {nombre, descripcion, stock, precio, imagen} = producto;
 
   const onChange = (e) => {
-    setCategoria({
-      ...categoria,
+    setProducto({
+      ...producto,
       [e.target.name]: e.target.value,
     });
   };
 
-  const crearCategoria = async () => {
+  const actualizar = async () => {
     if (nombre === '') {
       const mensaje = 'Introduzca una categoria valida';
       swal({
@@ -37,46 +51,44 @@ const CrearCategoria = () => {
         timer: 1500,
       });
     } else {
+      id = producto.idProducto;
       const data = {
-        nombre: categoria.nombre,
-        imagen: categoria.imagen,
+        nombre: producto.nombre,
+        descripcion: producto.descripcion,
+        stock: producto.stock,
+        precio: producto.precio,
+        imagen: producto.imagen,
       };
-      const response = await crud.POST('/api/categorias', data);
+
+      const response = await crud.PUT(
+        `/api/productos/${idCategoria}/${id}`,
+        data
+      );
       const mensaje = response.msg;
+      console.log(mensaje);
 
-      if (mensaje === 'La categoria ya existe') {
-        swal({
-          position: 'top-end',
-          icon: 'error',
-          title: mensaje,
-          buttons: false,
-          timer: 1500,
-        });
+      swal({
+        position: 'top-end',
+        icon: 'success',
+        text: mensaje,
+        buttons: false,
+        timer: 1000,
+      });
 
-        setCategoria({
-          nombre: '',
-          imagen: '',
-        });
-      } else {
-        swal({
-          position: 'top-end',
-          icon: 'success',
-          title: 'Categoria creada con Exito!',
-          buttons: false,
-          timer: 1000,
-        });
+      setProducto({
+        nombre: '',
+        descripcion: '',
+        stock: '',
+        precio: '',
+        imagen: '',
+      });
 
-        setCategoria({
-          nombre: '',
-          imagen: '',
-        });
-        navigate(`/admin?nombreUsuario=${nombreUsuario}`);
-      }
+      navigate(`/productos?id=${idCategoria}`);
     }
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    crearCategoria();
+    actualizar();
   };
 
   return (
@@ -87,7 +99,7 @@ const CrearCategoria = () => {
         <main className="flex-1">
           <div className="mt-10 flex justify-center">
             <h1 className="tracking-tight text-transparent text-4xl incline bg-gradient-to-r from-white via-blue-600 to-white bg-clip-text font-black text-left mb-5 md:mb-0">
-              Crear Categoria
+              Actualizar {nombre}
             </h1>
           </div>
           <div className="mt-10 flex justify-center">
@@ -108,6 +120,33 @@ const CrearCategoria = () => {
                   value={nombre}
                   onChange={onChange}
                 />
+                <input
+                  type="nombre"
+                  id="descripcion"
+                  name="descripcion"
+                  placeholder="Nueva Descripcion"
+                  className="font-black w-full mt-3 p-3 border rounded-xl bg-gray-50"
+                  defaultValue={descripcion}
+                  onChange={onChange}
+                />
+                <input
+                  type="number"
+                  id="stock"
+                  name="stock"
+                  placeholder="Nueva Stock"
+                  className="font-black w-full mt-3 p-3 border rounded-xl bg-gray-50"
+                  value={stock}
+                  onChange={onChange}
+                />
+                <input
+                  type="number"
+                  id="precio"
+                  name="precio"
+                  placeholder="Nueva precio"
+                  className="font-black w-full mt-3 p-3 border rounded-xl bg-gray-50"
+                  value={precio}
+                  onChange={onChange}
+                />
                 <label className="uppercase text-gray-600 block text-lx font-bold">
                   Imagen Categoria
                 </label>
@@ -123,12 +162,13 @@ const CrearCategoria = () => {
               </div>
               <input
                 type="submit"
-                value="Crear Categoria"
+                value="Actualizar Categoria"
                 className="bg-blue-900 mb-5 w-full py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-zinc-800 hover:text-black transition-colors"
+                onClick={actualizar}
               />
               <Link
                 className="block text-center my-5 font-black text-white hover:cursor-pointer hover:text-black transition-colors"
-                to={`/admin?nombreUsuario=${nombreUsuario}`}
+                to={`/productos?id=${idCategoria}&nombre=${nombreCategoria}`}
               >
                 Atras
               </Link>
@@ -140,4 +180,4 @@ const CrearCategoria = () => {
   );
 };
 
-export default CrearCategoria;
+export default ActualizarProducto;
